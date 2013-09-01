@@ -1,0 +1,115 @@
+//
+//  CardMatchingGame.m
+//  Matchismo
+//
+//  Created by Patrick Slattery on 8/30/13.
+//  Copyright (c) 2013 Patrick Slattery. All rights reserved.
+//
+
+#import "CardMatchingGame.h"
+
+@interface CardMatchingGame()
+
+@property (readwrite, nonatomic) int score;
+@property (strong, nonatomic) NSMutableArray *cards; // of card
+@property (readwrite, nonatomic) NSString *status;
+@property (readwrite, nonatomic) int matchNumber;
+@end
+
+@implementation CardMatchingGame
+
+
+
+- (NSMutableArray *)cards
+{
+    if (!_cards)_cards = [[NSMutableArray alloc] init];
+    return _cards;
+}
+
+#define MATCH_BONUS 4
+#define MISMATCH_PENALTY 2
+#define FLIP_COST 1 
+
+- (void)flipCardAtIndex:(NSUInteger)index
+{
+    Card *card = [self cardAtIndex:index];
+    NSMutableArray *possibleMatches = [[NSMutableArray alloc] init];
+    int faceUpCount = 0;
+    self.status = [NSString stringWithFormat:@"Flipped up %@", card.contents];
+    
+    
+    if (card && !card.isUnplayable) {
+
+        
+        if (!card.isFaceUp) {
+            faceUpCount += 1; // going to flip card
+            
+            for (Card *otherCard in self.cards) {
+                
+                if (otherCard.isFaceUp && !otherCard.isUnplayable) {
+                    faceUpCount += 1; // another face up card
+                    [possibleMatches addObject:otherCard]; // add the card to possible matches
+                    
+                    // if matchNumber is met
+                    if (faceUpCount == self.matchNumber) {
+                        // check score of possible matches
+                        int matchScore = [card match:possibleMatches];
+                        
+                        if (matchScore > 0) {
+                            card.isUnplayable = YES;
+                            self.status = [NSString stringWithFormat:@"Match between %@", card.contents];
+                            for (Card *otherCard in possibleMatches) {
+                                otherCard.isUnplayable = YES;
+                                self.status = [self.status stringByAppendingFormat:@" & %@", otherCard.contents];
+                            }
+                            self.status = [self.status stringByAppendingFormat:@" for %d points!", (matchScore * MATCH_BONUS)];
+                            self.score += matchScore * MATCH_BONUS;
+                            
+                        } else {
+                            // no match, unflip all cards and penalize
+                            self.status = [NSString stringWithFormat:@"%@", card.contents];
+                            for (Card *otherCard in possibleMatches) {
+                                otherCard.faceUp = NO;
+                                self.status = [self.status stringByAppendingFormat:@" & %@", otherCard.contents];
+                                self.score -= MISMATCH_PENALTY;
+                            }
+                            self.status = [self.status stringByAppendingFormat:@" don't match, penalty of %d points!", MISMATCH_PENALTY];
+                            
+                        }
+                    
+                        break;
+                    }
+                }
+            }
+            self.score -= FLIP_COST;
+        }
+        card.faceUp = !card.isFaceUp;
+    }
+}
+
+- (Card *)cardAtIndex:(NSUInteger)index
+{
+    return (index < [self.cards count]) ? self.cards[index] : nil;
+}
+
+- (id)initWithCardCount:(NSUInteger)count
+              usingDeck:(Deck *)deck
+            matchNumber:(int)matchNumber
+{
+    self = [super init];
+    if (self) {
+        for (int i = 0; i < count; i++) {
+            Card *card = [deck drawRandomCard];
+            if (card) {
+                self.cards[i] = card;
+            } else {
+                self = nil;
+                break;
+            }
+        }
+    }
+    self.matchNumber = matchNumber; //default 3 for texting
+    return self;
+}
+
+@end
