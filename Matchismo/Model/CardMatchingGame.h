@@ -20,6 +20,8 @@
 
 - (Card *)cardAtIndex:(NSUInteger)index;
 
+- (BOOL)isGameOver;
+
 @property (readonly, nonatomic) int score;
 @property (readonly, nonatomic) NSString *status;
 @property (readonly, nonatomic) int matchNumber;
