@@ -98,11 +98,11 @@
     int rankMatch = 0;
     NSPredicate *cardFilter = [NSPredicate predicateWithFormat:@"isUnplayable == NO"];
     NSArray *playableCards = [self.cards filteredArrayUsingPredicate:cardFilter];
-
+    
     for (int i = 0; i < ([playableCards count] - 1); i++) {
-        if ([playableCards[i].suit isEqualToString:playableCards[i + 1].suit]) {
+        if ([[playableCards[i] suit] isEqualToString:[playableCards[i + 1] suit]]) {
             suitMatch += 1;
-        } else if (playableCards[i].rank == playableCards[i + 1].rank) {
+        } else if ([playableCards[i] rank] == [playableCards[i + 1] rank]) {
             rankMatch += 1;
         }
     }

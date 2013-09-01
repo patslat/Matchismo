@@ -243,7 +243,7 @@
                     <connections>
                         <outlet property="flipsLabel" destination="9mD-vY-oSV" id="TNR-gY-qNm"/>
                         <outlet property="matchDisplay" destination="QE1-OS-Ew9" id="Xsm-k9-ZM9"/>
-                        <outlet property="matchNumber" destination="lyE-pG-zZ8" id="skk-xb-F2J"/>
+                        <outlet property="matchNumber" destination="lyE-pG-zZ8" id="VtN-YD-53R"/>
                         <outlet property="scoreDisplay" destination="h2X-IG-Gct" id="fhg-iW-lOK"/>
                         <outletCollection property="cardButtons" destination="tUQ-H4-aZc" id="7fd-SR-1Bl"/>
                         <outletCollection property="cardButtons" destination="XO3-kL-9Uc" id="eXd-9Z-qt3"/>

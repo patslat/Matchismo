@@ -43,6 +43,7 @@
 
 - (void)updateUI
 {
+
     for (UIButton *cardButton in self.cardButtons) {
         Card *card = [self.game cardAtIndex:[self.cardButtons indexOfObject:cardButton]];
         [cardButton setTitle:card.contents forState:UIControlStateSelected];
@@ -51,8 +52,17 @@
         cardButton.enabled = !card.isUnplayable;
         cardButton.alpha = (card.isUnplayable ? 0.3 : 1.0);
     }
-    self.scoreDisplay.text = [NSString stringWithFormat:@"Score: %d", self.game.score ];
+    
+    self.scoreDisplay.text = [NSString stringWithFormat:@"Score: %d", self.game.score];
+    
     self.matchDisplay.text = self.game.status;
+    
+    if ([self.game isGameOver]) {
+        self.matchNumber.hidden = YES;
+    } else {
+        // TODO disable cards and display game over
+        self.matchNumber.hidden = NO;
+    }
 }
 
 
